@@ -127,13 +127,21 @@
     flex-shrink:0;
   }
 
+  /* Зургийг агуулж буй хэсэг */
   .polaroid-viewer .frame{
     width:100%; aspect-ratio:1/1.05;
     border-radius:2px;
-    background: linear-gradient(135deg,var(--rose) 0%, var(--wine) 60%, var(--ink) 100%);
+    background: #2a0f1a;
     display:flex; align-items:center; justify-content:center;
-    font-size:clamp(2rem, 8vw, 2.6rem);
     overflow:hidden;
+  }
+
+  /* Зурганд зориулсан CSS тохиргоо */
+  .polaroid-viewer .frame img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
   }
 
   .polaroid-viewer p{
@@ -199,15 +207,16 @@
     <div class="photo-caption">Яг одоо маш хөөрхөн нэгнийг харж байна.</div>
     
     <div class="gallery-container">
-      <!-- Зүүн сумтай товчлуур -->
       <button class="arrow-btn" id="prevBtn" aria-label="Өмнөх зураг">❮</button>
 
       <div class="polaroid-viewer" id="polaroidCard">
-        <div class="frame" id="photoEmoji">🌷</div>
+        <div class="frame">
+          <!-- <img> тагаар сольсон -->
+          <img id="photoImg" src="" alt="Зураг">
+        </div>
         <p id="photoCaption">№1</p>
       </div>
       
-      <!-- Баруун сумтай товчлуур -->
       <button class="arrow-btn" id="nextBtn" aria-label="Дараагийн зураг">❯</button>
     </div>
   </section>
@@ -237,40 +246,42 @@
   }
 })();
 
-/* ---------- photo slider (Left & Right arrows) ---------- */
+/* ---------- photo slider ---------- */
 const photos = [
-  { emoji: 'https://scontent.fuln6-1.fna.fbcdn.net/v/t1.15752-9/753204391_1009465535221143_5636076830472390003_n.webp?stp=dst-webp_s960x960&_nc_cat=101&ccb=1-7&_nc_sid=9f807c&_nc_ohc=KWGmNuHx838Q7kNvwGVFhc1&_nc_oc=Ado37dtnND7_E6yOdu4RkLvaq62UcQdw6jvqLa7ggtxos2Q12CRVx-w2pgrTEgJmfMcj1IColCixRC4BCI_DX3Uk&_nc_zt=23&_nc_ht=scontent.fuln6-1.fna&_nc_ss=7b6a8&oh=03_Q7cD5wESSnGDFHo2jrock7gP807bZaCI3z27NB9gVKKhWVOoYA&oe=6A8B104E', text: '№1' },
-  { emoji: 'https://scontent.fuln6-2.fna.fbcdn.net/v/t1.15752-9/678900404_26814506598239881_8262322899359121543_n.webp?stp=dst-webp_s960x960&_nc_cat=104&ccb=1-7&_nc_sid=9f807c&_nc_ohc=Whbba7mwFMAQ7kNvwE2RbRM&_nc_oc=AdonYTT_AbFJjrwcDR5MR66BLJVtpFxgiJp_O3AzOOLLkexZfXyruwPTpiElQXSE1MsoPv6gYiVuD_XIpyJI6wAH&_nc_zt=23&_nc_ht=scontent.fuln6-2.fna&_nc_ss=7b6a8&oh=03_Q7cD5wHc_JdY36H-WaLgUa3oE6fn1MVt03AeTUIreYr2hV89mQ&oe=6A8B050A', text: '№2' },
-  { emoji: 'https://scontent.fuln6-3.fna.fbcdn.net/v/t1.15752-9/753741716_1025497980334183_3967080394777651738_n.webp?stp=dst-webp_s960x960&_nc_cat=105&ccb=1-7&_nc_sid=9f807c&_nc_ohc=DU1azWSMWo4Q7kNvwEMD4ZD&_nc_oc=Adp8-YDxfoAiNDAPosQzwYKn67l-JS8m34Zi8Bcbda-ZhSsLp3pEiIIrgp2pMUUU70549tcyvm_bTNVikDaDaPrW&_nc_zt=23&_nc_ht=scontent.fuln6-3.fna&_nc_ss=7b6a8&oh=03_Q7cD5wGAOAYbD7eQu8XiBD2iL1xKLrJqO9YTUln_i3HW0MbgoA&oe=6A8AF412', text: '№3' }
+  { url: 'https://scontent.fuln6-1.fna.fbcdn.net/v/t1.15752-9/753204391_1009465535221143_5636076830472390003_n.webp?stp=dst-webp_s960x960&_nc_cat=101&ccb=1-7&_nc_sid=9f807c&_nc_ohc=KWGmNuHx838Q7kNvwGVFhc1&_nc_oc=Ado37dtnND7_E6yOdu4RkLvaq62UcQdw6jvqLa7ggtxos2Q12CRVx-w2pgrTEgJmfMcj1IColCixRC4BCI_DX3Uk&_nc_zt=23&_nc_ht=scontent.fuln6-1.fna&_nc_ss=7b6a8&oh=03_Q7cD5wESSnGDFHo2jrock7gP807bZaCI3z27NB9gVKKhWVOoYA&oe=6A8B104E', text: '№1' },
+  { url: 'https://scontent.fuln6-2.fna.fbcdn.net/v/t1.15752-9/678900404_26814506598239881_8262322899359121543_n.webp?stp=dst-webp_s960x960&_nc_cat=104&ccb=1-7&_nc_sid=9f807c&_nc_ohc=Whbba7mwFMAQ7kNvwE2RbRM&_nc_oc=AdonYTT_AbFJjrwcDR5MR66BLJVtpFxgiJp_O3AzOOLLkexZfXyruwPTpiElQXSE1MsoPv6gYiVuD_XIpyJI6wAH&_nc_zt=23&_nc_ht=scontent.fuln6-2.fna&_nc_ss=7b6a8&oh=03_Q7cD5wHc_JdY36H-WaLgUa3oE6fn1MVt03AeTUIreYr2hV89mQ&oe=6A8B050A', text: '№2' },
+  { url: 'https://scontent.fuln6-3.fna.fbcdn.net/v/t1.15752-9/753741716_1025497980334183_3967080394777651738_n.webp?stp=dst-webp_s960x960&_nc_cat=105&ccb=1-7&_nc_sid=9f807c&_nc_ohc=DU1azWSMWo4Q7kNvwEMD4ZD&_nc_oc=Adp8-YDxfoAiNDAPosQzwYKn67l-JS8m34Zi8Bcbda-ZhSsLp3pEiIIrgp2pMUUU70549tcyvm_bTNVikDaDaPrW&_nc_zt=23&_nc_ht=scontent.fuln6-3.fna&_nc_ss=7b6a8&oh=03_Q7cD5wGAOAYbD7eQu8XiBD2iL1xKLrJqO9YTUln_i3HW0MbgoA&oe=6A8AF412', text: '№3' }
 ];
 
 let currentIndex = 0;
 
-const photoEmoji = document.getElementById('photoEmoji');
+const photoImg = document.getElementById('photoImg');
 const photoCaption = document.getElementById('photoCaption');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 const polaroidCard = document.getElementById('polaroidCard');
+
+// Анх ачаалагдахад 1-р зургийг харуулах
+photoImg.src = photos[0].url;
+photoCaption.textContent = photos[0].text;
 
 function updatePhoto(index) {
   polaroidCard.style.opacity = '0';
   polaroidCard.style.transform = 'scale(0.95)';
   
   setTimeout(()=>{
-    photoEmoji.textContent = photos[index].emoji;
+    photoImg.src = photos[index].url;
     photoCaption.textContent = photos[index].text;
     polaroidCard.style.opacity = '1';
     polaroidCard.style.transform = 'scale(1)';
   }, 120);
 }
 
-// Баруун сум
 nextBtn.addEventListener('click', ()=>{
   currentIndex = (currentIndex + 1) % photos.length;
   updatePhoto(currentIndex);
 });
 
-// Зүүн сум
 prevBtn.addEventListener('click', ()=>{
   currentIndex = (currentIndex - 1 + photos.length) % photos.length;
   updatePhoto(currentIndex);
